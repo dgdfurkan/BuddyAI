@@ -242,7 +242,7 @@ class BuddyAI {
     }
 
     preventZoomAndOverscroll() {
-        // Prevent zoom gestures
+        // Prevent zoom gestures (only multi-touch)
         document.addEventListener('gesturestart', (e) => {
             e.preventDefault();
         });
@@ -265,14 +265,14 @@ class BuddyAI {
             lastTouchEnd = now;
         }, false);
 
-        // Prevent overscroll bounce (but allow navigation)
+        // Only prevent multi-touch zoom, allow single touch scroll
         document.addEventListener('touchmove', (e) => {
             if (e.touches.length > 1) {
                 e.preventDefault();
             }
         }, { passive: false });
 
-        // Prevent pull-to-refresh (but allow navigation)
+        // Prevent pull-to-refresh only at the very top
         document.addEventListener('touchstart', (e) => {
             if (e.touches.length !== 1) return;
             const touch = e.touches[0];
@@ -283,7 +283,8 @@ class BuddyAI {
                 return;
             }
             
-            if (el && el.scrollTop === 0) {
+            // Only prevent if at the very top of the page
+            if (window.scrollY === 0 && el && el.scrollTop === 0) {
                 e.preventDefault();
             }
         }, { passive: false });
