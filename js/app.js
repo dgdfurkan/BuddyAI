@@ -237,58 +237,9 @@ class BuddyAI {
             });
         });
 
-        // Prevent zoom and overscroll
-        this.preventZoomAndOverscroll();
+        // Zoom prevention is handled by CSS viewport meta tag
     }
 
-    preventZoomAndOverscroll() {
-        // Prevent zoom gestures (only multi-touch)
-        document.addEventListener('gesturestart', (e) => {
-            e.preventDefault();
-        });
-
-        document.addEventListener('gesturechange', (e) => {
-            e.preventDefault();
-        });
-
-        document.addEventListener('gestureend', (e) => {
-            e.preventDefault();
-        });
-
-        // Prevent double tap zoom
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (e) => {
-            const now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-
-        // Only prevent multi-touch zoom, allow single touch scroll
-        document.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 1) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-
-        // Prevent pull-to-refresh only at the very top
-        document.addEventListener('touchstart', (e) => {
-            if (e.touches.length !== 1) return;
-            const touch = e.touches[0];
-            const el = document.elementFromPoint(touch.clientX, touch.clientY);
-            
-            // Allow navigation buttons to work
-            if (el && (el.closest('.bottom-nav') || el.closest('.nav-item'))) {
-                return;
-            }
-            
-            // Only prevent if at the very top of the page
-            if (window.scrollY === 0 && el && el.scrollTop === 0) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-    }
 
     navigateToPage(page) {
         // Scroll to top when changing pages
