@@ -398,13 +398,13 @@ html {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     color: var(--white);
     border-radius: var(--radius-lg);
-    padding: var(--spacing-6);
+    padding: var(--spacing-4);
     text-align: center;
 }
 
 .routine-detail-icon {
-    font-size: 4rem;
-    margin-bottom: var(--spacing-3);
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-2);
 }
 
 .routine-detail-name {
@@ -526,6 +526,57 @@ html {
     text-align: center;
     font-size: var(--font-size-sm);
     color: var(--gray-600);
+}
+
+/* Routine Settings */
+.routine-settings {
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-4);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+    margin-top: var(--spacing-4);
+}
+
+.routine-settings-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: var(--spacing-3);
+}
+
+.setting-group {
+    margin-bottom: var(--spacing-3);
+}
+
+.setting-label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--gray-700);
+    margin-bottom: var(--spacing-1);
+}
+
+.setting-select,
+.setting-input {
+    width: 100%;
+    padding: var(--spacing-2);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    background-color: var(--white);
+}
+
+.setting-select:focus,
+.setting-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.setting-checkbox {
+    margin-right: var(--spacing-2);
+    accent-color: var(--primary-color);
 }
 
 /* Routines */

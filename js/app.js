@@ -294,19 +294,13 @@ class BuddyAI {
     }
 
     updateDashboard() {
-        const today = new Date().toDateString();
-        const todayRoutines = this.routines.filter(routine => {
-            if (routine.frequency === 'daily') return true;
-            if (routine.frequency === 'weekly') {
-                const dayOfWeek = new Date().getDay();
-                return routine.weeklyDays && routine.weeklyDays.includes(dayOfWeek);
-            }
-            return false;
-        });
+        const today = new Date();
+        const todayString = today.toDateString();
+        const todayRoutines = this.routines.filter(routine => this.isRoutineDueToday(routine, today));
 
         const completedToday = todayRoutines.filter(routine => {
             const lastCompleted = routine.lastCompleted;
-            return lastCompleted && new Date(lastCompleted).toDateString() === today;
+            return lastCompleted && new Date(lastCompleted).toDateString() === todayString;
         });
 
         // Update progress
@@ -319,6 +313,47 @@ class BuddyAI {
 
         // Update motivation message
         this.updateMotivationMessage(completedToday.length, todayRoutines.length);
+    }
+
+    isRoutineDueToday(routine, date) {
+        const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ...
+        const currentHour = date.getHours();
+        
+        switch (routine.frequency) {
+            case 'daily':
+                // Check if weekends are included
+                if (!routine.weekends && (dayOfWeek === 0 || dayOfWeek === 6)) {
+                    return false;
+                }
+                return true;
+                
+            case 'weekly':
+                // Check specific days of week
+                if (routine.weeklyDays && routine.weeklyDays.includes(dayOfWeek)) {
+                    return true;
+                }
+                // Default to specific days if not set
+                const defaultWeeklyDays = [1, 3, 5]; // Monday, Wednesday, Friday
+                return (routine.weeklyDays || defaultWeeklyDays).includes(dayOfWeek);
+                
+            case 'custom':
+                // Check custom schedule
+                if (routine.customDays && routine.customDays.includes(dayOfWeek)) {
+                    return true;
+                }
+                // Check custom intervals (e.g., every 2 days, every 12 hours)
+                if (routine.intervalHours) {
+                    const lastCompleted = routine.lastCompleted ? new Date(routine.lastCompleted) : null;
+                    if (!lastCompleted) return true;
+                    
+                    const hoursSinceLastCompleted = (date - lastCompleted) / (1000 * 60 * 60);
+                    return hoursSinceLastCompleted >= routine.intervalHours;
+                }
+                return false;
+                
+            default:
+                return true;
+        }
     }
 
     updateMotivationMessage(completed, total) {
@@ -485,6 +520,36 @@ class BuddyAI {
             <div class="routine-actions">
                 ${this.getRoutineActions(routine, completedToday)}
             </div>
+
+            <div class="routine-settings">
+                <h3 class="routine-settings-title">Rutin Ayarları</h3>
+                <div class="routine-settings-content">
+                    <div class="setting-group">
+                        <label class="setting-label">Sıklık</label>
+                        <select class="setting-select" data-setting="frequency">
+                            <option value="daily" ${routine.frequency === 'daily' ? 'selected' : ''}>Her Gün</option>
+                            <option value="weekly" ${routine.frequency === 'weekly' ? 'selected' : ''}>Haftanın Belirli Günleri</option>
+                            <option value="custom" ${routine.frequency === 'custom' ? 'selected' : ''}>Özel Aralık</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label class="setting-label">Hatırlatıcı Saati</label>
+                        <input type="time" class="setting-input" data-setting="time" value="${routine.time || '09:00'}">
+                    </div>
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <input type="checkbox" class="setting-checkbox" data-setting="notifications" ${routine.notifications !== false ? 'checked' : ''}>
+                            Bildirim Gönder
+                        </label>
+                    </div>
+                    <div class="setting-group">
+                        <label class="setting-label">
+                            <input type="checkbox" class="setting-checkbox" data-setting="weekends" ${routine.weekends !== false ? 'checked' : ''}>
+                            Hafta Sonları Dahil
+                        </label>
+                    </div>
+                </div>
+            </div>
         `;
 
         // Add event listeners for action buttons
@@ -629,6 +694,30 @@ class BuddyAI {
                 this.handleRoutineAction(routine, action);
             });
         });
+
+        // Settings listeners
+        document.querySelectorAll('.setting-select, .setting-input, .setting-checkbox').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const setting = e.currentTarget.dataset.setting;
+                const value = e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value;
+                this.updateRoutineSetting(routine.id, setting, value);
+            });
+        });
+    }
+
+    updateRoutineSetting(routineId, setting, value) {
+        const routine = this.routines.find(r => r.id === routineId);
+        if (routine) {
+            routine[setting] = value;
+            this.saveRoutines();
+            this.showNotification(`${setting} ayarı güncellendi! ⚙️`, 'success');
+            
+            // Update the display if needed
+            if (setting === 'frequency') {
+                this.updateDashboard();
+                this.updateRoutinesPage();
+            }
+        }
     }
 
     handleRoutineAction(routine, action) {
