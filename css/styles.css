@@ -74,13 +74,13 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
-    overscroll-behavior-y: contain;
+    overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
 }
 
 html {
     overflow-x: hidden;
-    overscroll-behavior-y: contain;
+    overscroll-behavior: none;
 }
 
 /* Loading Screen */
@@ -134,9 +134,14 @@ html {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     color: var(--white);
     padding: var(--spacing-4) var(--spacing-4) var(--spacing-6);
-    position: sticky;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
     top: 0;
-    z-index: 100;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    max-width: 480px;
+    margin: 0 auto;
 }
 
 .header-content {
@@ -231,6 +236,7 @@ html {
 .main-content {
     flex: 1;
     padding: var(--spacing-4);
+    padding-top: calc(var(--spacing-4) + 80px); /* Space for fixed header */
     padding-bottom: calc(var(--spacing-4) + 100px); /* Space for fixed bottom nav */
     min-height: calc(100vh - 200px); /* Ensure content fills screen */
     max-width: 480px;
