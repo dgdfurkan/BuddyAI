@@ -265,18 +265,24 @@ class BuddyAI {
             lastTouchEnd = now;
         }, false);
 
-        // Prevent overscroll bounce
+        // Prevent overscroll bounce (but allow navigation)
         document.addEventListener('touchmove', (e) => {
             if (e.touches.length > 1) {
                 e.preventDefault();
             }
         }, { passive: false });
 
-        // Prevent pull-to-refresh
+        // Prevent pull-to-refresh (but allow navigation)
         document.addEventListener('touchstart', (e) => {
             if (e.touches.length !== 1) return;
             const touch = e.touches[0];
             const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            
+            // Allow navigation buttons to work
+            if (el && (el.closest('.bottom-nav') || el.closest('.nav-item'))) {
+                return;
+            }
+            
             if (el && el.scrollTop === 0) {
                 e.preventDefault();
             }
