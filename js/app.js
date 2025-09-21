@@ -317,39 +317,39 @@ class BuddyAI {
 
     isRoutineDueToday(routine, date) {
         const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ...
-        const currentHour = date.getHours();
+        const lastCompleted = routine.lastCompleted ? new Date(routine.lastCompleted) : null;
         
         switch (routine.frequency) {
             case 'daily':
-                // Check if weekends are included
-                if (!routine.weekends && (dayOfWeek === 0 || dayOfWeek === 6)) {
-                    return false;
-                }
                 return true;
                 
-            case 'weekly':
-                // Check specific days of week
-                if (routine.weeklyDays && routine.weeklyDays.includes(dayOfWeek)) {
-                    return true;
-                }
-                // Default to specific days if not set
-                const defaultWeeklyDays = [1, 3, 5]; // Monday, Wednesday, Friday
-                return (routine.weeklyDays || defaultWeeklyDays).includes(dayOfWeek);
+            case 'weekdays':
+                return dayOfWeek >= 1 && dayOfWeek <= 5; // Monday to Friday
                 
-            case 'custom':
-                // Check custom schedule
-                if (routine.customDays && routine.customDays.includes(dayOfWeek)) {
-                    return true;
-                }
-                // Check custom intervals (e.g., every 2 days, every 12 hours)
-                if (routine.intervalHours) {
-                    const lastCompleted = routine.lastCompleted ? new Date(routine.lastCompleted) : null;
-                    if (!lastCompleted) return true;
-                    
-                    const hoursSinceLastCompleted = (date - lastCompleted) / (1000 * 60 * 60);
-                    return hoursSinceLastCompleted >= routine.intervalHours;
-                }
-                return false;
+            case 'weekly':
+                return [1, 3, 5].includes(dayOfWeek); // Monday, Wednesday, Friday
+                
+            case 'weekend':
+                return dayOfWeek === 0 || dayOfWeek === 6; // Saturday, Sunday
+                
+            case 'twice-week':
+                return [2, 6].includes(dayOfWeek); // Tuesday, Saturday
+                
+            case 'once-week':
+                return dayOfWeek === 1; // Monday
+                
+            case 'twice-day':
+                return true; // Every day, but twice per day
+                
+            case 'every-2-days':
+                if (!lastCompleted) return true;
+                const daysSinceLastCompleted = (date - lastCompleted) / (1000 * 60 * 60 * 24);
+                return daysSinceLastCompleted >= 2;
+                
+            case 'every-12-hours':
+                if (!lastCompleted) return true;
+                const hoursSinceLastCompleted = (date - lastCompleted) / (1000 * 60 * 60);
+                return hoursSinceLastCompleted >= 12;
                 
             default:
                 return true;
@@ -522,31 +522,35 @@ class BuddyAI {
             </div>
 
             <div class="routine-settings">
-                <h3 class="routine-settings-title">Rutin Ayarları</h3>
+                <h3 class="routine-settings-title">⚙️ Rutin Ayarları</h3>
                 <div class="routine-settings-content">
                     <div class="setting-group">
-                        <label class="setting-label">Sıklık</label>
+                        <label class="setting-label">📅 Sıklık</label>
                         <select class="setting-select" data-setting="frequency">
                             <option value="daily" ${routine.frequency === 'daily' ? 'selected' : ''}>Her Gün</option>
-                            <option value="weekly" ${routine.frequency === 'weekly' ? 'selected' : ''}>Haftanın Belirli Günleri</option>
-                            <option value="custom" ${routine.frequency === 'custom' ? 'selected' : ''}>Özel Aralık</option>
+                            <option value="weekdays" ${routine.frequency === 'weekdays' ? 'selected' : ''}>Hafta İçi (Pazartesi-Cuma)</option>
+                            <option value="weekly" ${routine.frequency === 'weekly' ? 'selected' : ''}>Haftada 3 Gün (Pazartesi, Çarşamba, Cuma)</option>
+                            <option value="weekend" ${routine.frequency === 'weekend' ? 'selected' : ''}>Sadece Hafta Sonu</option>
+                            <option value="twice-week" ${routine.frequency === 'twice-week' ? 'selected' : ''}>Haftada 2 Kez</option>
+                            <option value="once-week" ${routine.frequency === 'once-week' ? 'selected' : ''}>Haftada 1 Kez</option>
+                            <option value="twice-day" ${routine.frequency === 'twice-day' ? 'selected' : ''}>Günde 2 Kez</option>
+                            <option value="every-2-days" ${routine.frequency === 'every-2-days' ? 'selected' : ''}>2 Günde Bir</option>
+                            <option value="every-12-hours" ${routine.frequency === 'every-12-hours' ? 'selected' : ''}>12 Saatte Bir</option>
                         </select>
-                    </div>
-                    <div class="setting-group">
-                        <label class="setting-label">Hatırlatıcı Saati</label>
-                        <input type="time" class="setting-input" data-setting="time" value="${routine.time || '09:00'}">
                     </div>
                     <div class="setting-group">
                         <label class="setting-label">
                             <input type="checkbox" class="setting-checkbox" data-setting="notifications" ${routine.notifications !== false ? 'checked' : ''}>
-                            Bildirim Gönder
+                            🔔 Bildirim Gönder
                         </label>
                     </div>
                     <div class="setting-group">
-                        <label class="setting-label">
-                            <input type="checkbox" class="setting-checkbox" data-setting="weekends" ${routine.weekends !== false ? 'checked' : ''}>
-                            Hafta Sonları Dahil
-                        </label>
+                        <label class="setting-label">🎯 Hedef</label>
+                        <select class="setting-select" data-setting="target">
+                            <option value="streak" ${routine.target === 'streak' ? 'selected' : ''}>Zincir Oluştur</option>
+                            <option value="count" ${routine.target === 'count' ? 'selected' : ''}>Sayı Hedefi</option>
+                            <option value="time" ${routine.target === 'time' ? 'selected' : ''}>Süre Hedefi</option>
+                        </select>
                     </div>
                 </div>
             </div>
