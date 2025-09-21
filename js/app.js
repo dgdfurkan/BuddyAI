@@ -342,20 +342,8 @@ class BuddyAI {
         
         container.innerHTML = this.routines.map(routine => `
             <div class="routine-card" onclick="app.showRoutineDetails('${routine.id}')">
-                <div class="routine-header">
-                    <h3 class="routine-name">${routine.name}</h3>
-                    <span class="routine-icon">${routine.icon}</span>
-                </div>
-                <p class="routine-description">${routine.description}</p>
-                <div class="routine-stats">
-                    <div class="routine-streak">
-                        <span>🔥</span>
-                        <span>${routine.streak} gün</span>
-                    </div>
-                    <span class="routine-status ${routine.completed ? 'completed' : 'pending'}">
-                        ${routine.completed ? 'Tamamlandı' : 'Bekliyor'}
-                    </span>
-                </div>
+                <span class="routine-icon">${routine.icon}</span>
+                <h3 class="routine-name">${routine.name}</h3>
             </div>
         `).join('');
     }
