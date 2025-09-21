@@ -147,9 +147,9 @@ body {
 }
 
 .app-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-md);
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
     object-fit: contain;
 }
 
