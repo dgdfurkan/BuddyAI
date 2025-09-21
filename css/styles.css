@@ -341,48 +341,160 @@ body {
     line-height: 1.5;
 }
 
-/* Quick Access */
-.quick-access {
-    margin-top: var(--spacing-6);
+/* Routine Detail Page */
+.routine-detail-content {
+    display: grid;
+    gap: var(--spacing-4);
 }
 
-.quick-access h3 {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: var(--gray-800);
+.back-btn {
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.back-btn:hover {
+    background-color: var(--gray-200);
+}
+
+.routine-detail-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-6);
+    text-align: center;
+}
+
+.routine-detail-icon {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-3);
+}
+
+.routine-detail-name {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-2);
+}
+
+.routine-detail-description {
+    font-size: var(--font-size-base);
+    opacity: 0.9;
     margin-bottom: var(--spacing-4);
 }
 
-.quick-routines-grid {
+.routine-detail-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-6);
+}
+
+.routine-stat {
+    text-align: center;
+}
+
+.routine-stat-value {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    display: block;
+}
+
+.routine-stat-label {
+    font-size: var(--font-size-sm);
+    opacity: 0.8;
+}
+
+.routine-actions {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-3);
 }
 
-.quick-routine-btn {
+.routine-action-btn {
     background-color: var(--white);
-    border: 1px solid var(--gray-200);
+    border: 2px solid var(--gray-200);
     border-radius: var(--radius-lg);
     padding: var(--spacing-4);
     cursor: pointer;
     transition: var(--transition-fast);
-    text-align: center;
-}
-
-.quick-routine-btn:hover {
-    border-color: var(--primary-color);
-    box-shadow: var(--shadow-md);
-}
-
-.quick-routine-icon {
-    font-size: var(--font-size-2xl);
-    margin-bottom: var(--spacing-2);
-}
-
-.quick-routine-name {
-    font-size: var(--font-size-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    font-size: var(--font-size-base);
     font-weight: 500;
     color: var(--gray-700);
+}
+
+.routine-action-btn:hover {
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.routine-action-btn.completed {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    color: var(--white);
+}
+
+.routine-action-btn.completed:hover {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.routine-action-icon {
+    font-size: var(--font-size-xl);
+}
+
+.routine-action-text {
+    flex: 1;
+}
+
+.routine-action-description {
+    font-size: var(--font-size-sm);
+    opacity: 0.8;
+    margin-top: var(--spacing-1);
+}
+
+.routine-progress-section {
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-4);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+}
+
+.routine-progress-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: var(--spacing-3);
+}
+
+.routine-progress-bar {
+    width: 100%;
+    height: 12px;
+    background-color: var(--gray-200);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: var(--spacing-3);
+}
+
+.routine-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--success-color), var(--secondary-color));
+    border-radius: var(--radius-sm);
+    transition: width var(--transition-normal);
+}
+
+.routine-progress-text {
+    text-align: center;
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
 }
 
 /* Routines */

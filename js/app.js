@@ -224,6 +224,11 @@ class BuddyAI {
             this.addRoutine();
         });
 
+        // Back to routines button
+        document.getElementById('back-to-routines-btn').addEventListener('click', () => {
+            this.navigateToPage('routines');
+        });
+
         // Period selector buttons
         document.querySelectorAll('.period-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -238,7 +243,9 @@ class BuddyAI {
         document.querySelectorAll('.nav-item').forEach(item => {
             item.classList.remove('active');
         });
-        document.querySelector(`[data-page="${page}"]`).classList.add('active');
+        if (page !== 'routine-detail') {
+            document.querySelector(`[data-page="${page}"]`).classList.add('active');
+        }
 
         // Update pages
         document.querySelectorAll('.page').forEach(pageEl => {
@@ -255,6 +262,9 @@ class BuddyAI {
                 break;
             case 'routines':
                 this.updateRoutinesPage();
+                break;
+            case 'routine-detail':
+                // Content will be set by showRoutineDetail
                 break;
             case 'calendar':
                 this.updateCalendarPage();
@@ -303,9 +313,6 @@ class BuddyAI {
 
         // Update motivation message
         this.updateMotivationMessage(completedToday.length, todayRoutines.length);
-
-        // Update quick access
-        this.updateQuickAccess();
     }
 
     updateMotivationMessage(completed, total) {
@@ -323,17 +330,6 @@ class BuddyAI {
         document.getElementById('motivation-message').textContent = message.text;
     }
 
-    updateQuickAccess() {
-        const quickRoutines = this.routines.slice(0, 4);
-        const container = document.getElementById('quick-routines');
-        
-        container.innerHTML = quickRoutines.map(routine => `
-            <button class="quick-routine-btn" onclick="app.completeRoutine('${routine.id}')">
-                <div class="quick-routine-icon">${routine.icon}</div>
-                <div class="quick-routine-name">${routine.name}</div>
-            </button>
-        `).join('');
-    }
 
     updateRoutinesPage() {
         const container = document.getElementById('routines-list');
@@ -444,8 +440,233 @@ class BuddyAI {
         const routine = this.routines.find(r => r.id === routineId);
         if (!routine) return;
 
-        // Show routine details modal
-        alert(`${routine.name} detayları:\n\nAçıklama: ${routine.description}\nSıklık: ${routine.frequency}\nSaat: ${routine.time}\nZincir: ${routine.streak} gün`);
+        this.navigateToPage('routine-detail');
+        this.renderRoutineDetail(routine);
+    }
+
+    renderRoutineDetail(routine) {
+        const today = new Date().toDateString();
+        const completedToday = routine.lastCompleted && 
+            new Date(routine.lastCompleted).toDateString() === today;
+
+        // Update page title
+        document.getElementById('routine-detail-title').textContent = routine.name;
+
+        // Render routine detail content
+        const container = document.getElementById('routine-detail-content');
+        container.innerHTML = `
+            <div class="routine-detail-header">
+                <div class="routine-detail-icon">${routine.icon}</div>
+                <h1 class="routine-detail-name">${routine.name}</h1>
+                <p class="routine-detail-description">${routine.description}</p>
+                <div class="routine-detail-stats">
+                    <div class="routine-stat">
+                        <span class="routine-stat-value">${routine.streak}</span>
+                        <span class="routine-stat-label">Günlük Zincir</span>
+                    </div>
+                    <div class="routine-stat">
+                        <span class="routine-stat-value">${routine.frequency === 'daily' ? 'Günlük' : routine.frequency === 'weekly' ? 'Haftalık' : 'Özel'}</span>
+                        <span class="routine-stat-label">Sıklık</span>
+                    </div>
+                    <div class="routine-stat">
+                        <span class="routine-stat-value">${routine.time || 'Belirsiz'}</span>
+                        <span class="routine-stat-label">Saat</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="routine-progress-section">
+                <h3 class="routine-progress-title">Bugünkü İlerleme</h3>
+                <div class="routine-progress-bar">
+                    <div class="routine-progress-fill" style="width: ${completedToday ? '100' : '0'}%"></div>
+                </div>
+                <p class="routine-progress-text">
+                    ${completedToday ? '✅ Bugün tamamlandı!' : '⏳ Henüz tamamlanmadı'}
+                </p>
+            </div>
+
+            <div class="routine-actions">
+                ${this.getRoutineActions(routine, completedToday)}
+            </div>
+        `;
+
+        // Add event listeners for action buttons
+        this.setupRoutineActionListeners(routine);
+    }
+
+    getRoutineActions(routine, completedToday) {
+        const actions = [];
+
+        if (!completedToday) {
+            actions.push(`
+                <button class="routine-action-btn" data-action="complete">
+                    <span class="routine-action-icon">✅</span>
+                    <div class="routine-action-text">
+                        <div>Rutini Tamamla</div>
+                        <div class="routine-action-description">Bugünkü rutini tamamla ve zinciri devam ettir</div>
+                    </div>
+                </button>
+            `);
+        } else {
+            actions.push(`
+                <button class="routine-action-btn completed" data-action="completed">
+                    <span class="routine-action-icon">🎉</span>
+                    <div class="routine-action-text">
+                        <div>Tamamlandı!</div>
+                        <div class="routine-action-description">Bugünkü rutin başarıyla tamamlandı</div>
+                    </div>
+                </button>
+            `);
+        }
+
+        // Add routine-specific actions
+        switch (routine.id) {
+            case 'yemek':
+                actions.push(`
+                    <button class="routine-action-btn" data-action="meal-plan">
+                        <span class="routine-action-icon">🍽️</span>
+                        <div class="routine-action-text">
+                            <div>Öğün Planla</div>
+                            <div class="routine-action-description">Günlük öğünlerini planla</div>
+                        </div>
+                    </button>
+                `);
+                break;
+            case 'spor':
+                actions.push(`
+                    <button class="routine-action-btn" data-action="workout">
+                        <span class="routine-action-icon">💪</span>
+                        <div class="routine-action-text">
+                            <div>Egzersiz Yap</div>
+                            <div class="routine-action-description">Günlük egzersizini kaydet</div>
+                        </div>
+                    </button>
+                `);
+                break;
+            case 'namaz':
+                actions.push(`
+                    <button class="routine-action-btn" data-action="prayer-times">
+                        <span class="routine-action-icon">🕌</span>
+                        <div class="routine-action-text">
+                            <div>Namaz Vakitleri</div>
+                            <div class="routine-action-description">Günlük namaz vakitlerini gör</div>
+                        </div>
+                    </button>
+                `);
+                break;
+            case 'ezber':
+                actions.push(`
+                    <button class="routine-action-btn" data-action="memorize">
+                        <span class="routine-action-icon">📖</span>
+                        <div class="routine-action-text">
+                            <div>Ezber Yap</div>
+                            <div class="routine-action-description">Sure ezberleme seansı başlat</div>
+                        </div>
+                    </button>
+                `);
+                break;
+            case 'zincir':
+                actions.push(`
+                    <button class="routine-action-btn" data-action="break-habit">
+                        <span class="routine-action-icon">🔗</span>
+                        <div class="routine-action-text">
+                            <div>Zinciri Kır</div>
+                            <div class="routine-action-description">Kötü alışkanlığı bırak</div>
+                        </div>
+                    </button>
+                `);
+                break;
+            case 'sureler':
+                actions.push(`
+                    <button class="routine-action-btn" data-action="read-quran">
+                        <span class="routine-action-icon">📜</span>
+                        <div class="routine-action-text">
+                            <div>Kur'an Oku</div>
+                            <div class="routine-action-description">Sure okuma seansı başlat</div>
+                        </div>
+                    </button>
+                `);
+                break;
+            case 'evcil-hayvan':
+                actions.push(`
+                    <button class="routine-action-btn" data-action="feed-pet">
+                        <span class="routine-action-icon">🐕</span>
+                        <div class="routine-action-text">
+                            <div>Besle</div>
+                            <div class="routine-action-description">Evcil hayvanını besle</div>
+                        </div>
+                    </button>
+                `);
+                break;
+            case 'dis-fircalama':
+                actions.push(`
+                    <button class="routine-action-btn" data-action="brush-teeth">
+                        <span class="routine-action-icon">🦷</span>
+                        <div class="routine-action-text">
+                            <div>Dişlerini Fırçala</div>
+                            <div class="routine-action-description">Diş fırçalama seansı</div>
+                        </div>
+                    </button>
+                `);
+                break;
+            case 'ev-temizligi':
+                actions.push(`
+                    <button class="routine-action-btn" data-action="clean-house">
+                        <span class="routine-action-icon">🧹</span>
+                        <div class="routine-action-text">
+                            <div>Ev Temizle</div>
+                            <div class="routine-action-description">Haftalık temizlik görevleri</div>
+                        </div>
+                    </button>
+                `);
+                break;
+        }
+
+        return actions.join('');
+    }
+
+    setupRoutineActionListeners(routine) {
+        document.querySelectorAll('.routine-action-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const action = e.currentTarget.dataset.action;
+                this.handleRoutineAction(routine, action);
+            });
+        });
+    }
+
+    handleRoutineAction(routine, action) {
+        switch (action) {
+            case 'complete':
+                this.completeRoutine(routine.id);
+                break;
+            case 'meal-plan':
+                this.showNotification('Öğün planlama özelliği yakında! 🍽️', 'info');
+                break;
+            case 'workout':
+                this.showNotification('Egzersiz kaydetme özelliği yakında! 💪', 'info');
+                break;
+            case 'prayer-times':
+                this.showNotification('Namaz vakitleri özelliği yakında! 🕌', 'info');
+                break;
+            case 'memorize':
+                this.showNotification('Ezber sistemi yakında! 📖', 'info');
+                break;
+            case 'break-habit':
+                this.showNotification('Zincir kırma sistemi yakında! 🔗', 'info');
+                break;
+            case 'read-quran':
+                this.showNotification('Kur\'an okuma sistemi yakında! 📜', 'info');
+                break;
+            case 'feed-pet':
+                this.showNotification('Evcil hayvan besleme sistemi yakında! 🐕', 'info');
+                break;
+            case 'brush-teeth':
+                this.showNotification('Diş fırçalama takibi yakında! 🦷', 'info');
+                break;
+            case 'clean-house':
+                this.showNotification('Ev temizliği sistemi yakında! 🧹', 'info');
+                break;
+        }
     }
 
     selectPeriod(period) {
