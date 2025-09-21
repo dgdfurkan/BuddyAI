@@ -607,9 +607,6 @@ html {
     border: 1px solid var(--gray-200);
 }
 
-.calendar-view {
-    /* Calendar styles will be added in calendar.js */
-}
 
 .calendar-header {
     display: flex;
@@ -1208,9 +1205,6 @@ html {
     accent-color: var(--primary-color);
 }
 
-.checkmark {
-    /* Custom checkbox styling if needed */
-}
 
 .setting-item label:not(.setting-label) {
     display: block;
