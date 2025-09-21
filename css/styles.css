@@ -528,80 +528,197 @@ html {
     color: var(--gray-600);
 }
 
-/* Routine Settings */
+/* iOS Style Routine Settings */
 .routine-settings {
-    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-4);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--gray-200);
     margin-top: var(--spacing-4);
 }
 
 .routine-settings-title {
     font-size: var(--font-size-lg);
-    font-weight: 700;
+    font-weight: 600;
     color: var(--gray-800);
-    margin-bottom: var(--spacing-4);
-    text-align: center;
-    padding-bottom: var(--spacing-2);
-    border-bottom: 2px solid var(--primary-color);
+    margin-bottom: var(--spacing-3);
+    padding-left: var(--spacing-3);
 }
 
-.setting-group {
-    margin-bottom: var(--spacing-4);
+.setting-group.ios-style {
     background-color: var(--white);
-    padding: var(--spacing-3);
-    border-radius: var(--radius-md);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    margin-bottom: var(--spacing-3);
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.setting-row {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-size: 16px;
+    color: var(--gray-800);
+}
+
+.setting-row:last-child {
+    border-bottom: none;
 }
 
 .setting-label {
-    display: block;
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    color: var(--gray-700);
-    margin-bottom: var(--spacing-2);
+    font-weight: 400;
+    color: var(--gray-800);
+    flex: 1;
+}
+
+/* iOS Select */
+.ios-select {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+    color: var(--primary-color);
+    text-align: right;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    min-width: 80px;
+}
+
+.ios-select-small {
+    background-color: rgba(0, 122, 255, 0.1);
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 14px;
+    color: var(--primary-color);
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+/* iOS Number Input */
+.ios-number-input {
+    background-color: rgba(0, 122, 255, 0.1);
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 14px;
+    color: var(--primary-color);
+    outline: none;
+    text-align: center;
+    width: 50px;
+    font-weight: 500;
+}
+
+/* Radio Buttons */
+.radio-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.radio-row:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.radio-row input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    accent-color: var(--primary-color);
+}
+
+.radio-row.selected {
+    background-color: rgba(0, 122, 255, 0.05);
+}
+
+/* Day Buttons */
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 12px;
+}
+
+.day-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    border: 1px solid var(--gray-300);
+    background-color: var(--white);
     display: flex;
     align-items: center;
-    gap: var(--spacing-1);
-}
-
-.setting-select {
-    width: 100%;
-    padding: var(--spacing-3);
-    border: 2px solid var(--gray-300);
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-sm);
-    background-color: var(--white);
-    font-weight: 500;
-    transition: var(--transition-fast);
-}
-
-.setting-select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    transform: translateY(-1px);
-}
-
-.setting-checkbox {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--primary-color);
-    margin-right: var(--spacing-2);
-    transform: scale(1.2);
-}
-
-.setting-label:has(.setting-checkbox) {
+    justify-content: center;
     cursor: pointer;
-    padding: var(--spacing-2);
-    border-radius: var(--radius-md);
-    transition: var(--transition-fast);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-700);
+    transition: all 0.2s;
 }
 
-.setting-label:has(.setting-checkbox):hover {
-    background-color: var(--gray-50);
+.day-button:hover {
+    background-color: rgba(0, 122, 255, 0.1);
+}
+
+.day-button.selected {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* iOS Toggle Switch */
+.toggle-row {
+    justify-content: space-between;
+}
+
+.ios-toggle {
+    position: relative;
+    width: 51px;
+    height: 31px;
+}
+
+.ios-toggle-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ios-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 31px;
+    transition: 0.3s;
+}
+
+.ios-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 27px;
+    width: 27px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.ios-toggle-input:checked + .ios-toggle-slider {
+    background-color: #34c759;
+}
+
+.ios-toggle-input:checked + .ios-toggle-slider:before {
+    transform: translateX(20px);
+}
+
+/* Frequency Options */
+.frequency-options {
+    margin-top: var(--spacing-2);
 }
 
 /* Day Selector */

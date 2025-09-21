@@ -531,55 +531,129 @@ class BuddyAI {
             </div>
 
             <div class="routine-settings">
-                <h3 class="routine-settings-title">⚙️ Rutin Ayarları</h3>
+                <h3 class="routine-settings-title">Tekrarlama</h3>
                 <div class="routine-settings-content">
-                    <div class="setting-group">
-                        <label class="setting-label">📅 Sıklık Tipi</label>
-                        <select class="setting-select" data-setting="frequencyType" id="frequency-type-select">
-                            <option value="daily" ${(routine.frequencyType || 'daily') === 'daily' ? 'selected' : ''}>Günlük</option>
-                            <option value="weekly" ${routine.frequencyType === 'weekly' ? 'selected' : ''}>Haftanın Belirli Günleri</option>
-                            <option value="interval" ${routine.frequencyType === 'interval' ? 'selected' : ''}>Belirli Aralıklarla</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-group" id="daily-options" style="display: ${(routine.frequencyType || 'daily') === 'daily' ? 'block' : 'none'}">
-                        <label class="setting-label">🗓️ Günlük Ayar</label>
-                        <select class="setting-select" data-setting="dailyType">
-                            <option value="everyday" ${(routine.dailyType || 'everyday') === 'everyday' ? 'selected' : ''}>Her Gün</option>
-                            <option value="weekdays" ${routine.dailyType === 'weekdays' ? 'selected' : ''}>Sadece Hafta İçi</option>
-                            <option value="weekends" ${routine.dailyType === 'weekends' ? 'selected' : ''}>Sadece Hafta Sonu</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-group" id="weekly-options" style="display: ${routine.frequencyType === 'weekly' ? 'block' : 'none'}">
-                        <label class="setting-label">📅 Günleri Seç</label>
-                        <div class="day-selector">
-                            ${['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'].map((day, index) => `
-                                <label class="day-option">
-                                    <input type="checkbox" class="day-checkbox" data-day="${index + 1}" ${routine.selectedDays && routine.selectedDays.includes(index + 1) ? 'checked' : ''}>
-                                    <span class="day-label">${day}</span>
-                                </label>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <div class="setting-group" id="interval-options" style="display: ${routine.frequencyType === 'interval' ? 'block' : 'none'}">
-                        <label class="setting-label">⏱️ Aralık</label>
-                        <div class="interval-inputs">
-                            <input type="number" class="setting-input" data-setting="intervalNumber" placeholder="Sayı" value="${routine.intervalNumber || 1}" min="1">
-                            <select class="setting-select" data-setting="intervalUnit">
-                                <option value="hours" ${routine.intervalUnit === 'hours' ? 'selected' : ''}>Saat</option>
-                                <option value="days" ${(routine.intervalUnit || 'days') === 'days' ? 'selected' : ''}>Gün</option>
-                                <option value="weeks" ${routine.intervalUnit === 'weeks' ? 'selected' : ''}>Hafta</option>
+                    
+                    <!-- Ana Kategori Seçimi -->
+                    <div class="setting-group ios-style">
+                        <div class="setting-row">
+                            <span class="setting-label">Sıklık</span>
+                            <select class="ios-select" data-setting="frequency" id="frequency-select">
+                                <option value="daily" ${(routine.frequency || 'daily') === 'daily' ? 'selected' : ''}>Günlük</option>
+                                <option value="weekly" ${routine.frequency === 'weekly' ? 'selected' : ''}>Haftalık</option>
+                                <option value="monthly" ${routine.frequency === 'monthly' ? 'selected' : ''}>Aylık</option>
+                                <option value="yearly" ${routine.frequency === 'yearly' ? 'selected' : ''}>Yıllık</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="setting-group">
-                        <label class="setting-label">
-                            <input type="checkbox" class="setting-checkbox" data-setting="notifications" ${routine.notifications !== false ? 'checked' : ''}>
-                            🔔 Bildirim Gönder
-                        </label>
+                    <!-- Günlük Seçenekleri -->
+                    <div class="frequency-options" id="daily-options" style="display: ${(routine.frequency || 'daily') === 'daily' ? 'block' : 'none'}">
+                        <div class="setting-group ios-style">
+                            <div class="setting-row radio-row" data-value="every-day">
+                                <input type="radio" name="dailyType" value="every-day" ${(routine.dailyType || 'every-day') === 'every-day' ? 'checked' : ''}>
+                                <span>Her Gün</span>
+                            </div>
+                            <div class="setting-row radio-row" data-value="weekdays">
+                                <input type="radio" name="dailyType" value="weekdays" ${routine.dailyType === 'weekdays' ? 'checked' : ''}>
+                                <span>Hafta İçi</span>
+                            </div>
+                            <div class="setting-row radio-row" data-value="custom-daily">
+                                <input type="radio" name="dailyType" value="custom-daily" ${routine.dailyType === 'custom-daily' ? 'checked' : ''}>
+                                <span>Her</span>
+                                <input type="number" class="ios-number-input" min="1" max="365" value="${routine.dailyInterval || 2}" data-setting="dailyInterval">
+                                <span>günde bir</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Haftalık Seçenekleri -->
+                    <div class="frequency-options" id="weekly-options" style="display: ${routine.frequency === 'weekly' ? 'block' : 'none'}">
+                        <div class="setting-group ios-style">
+                            <div class="setting-row">
+                                <span>Her</span>
+                                <input type="number" class="ios-number-input" min="1" max="52" value="${routine.weeklyInterval || 1}" data-setting="weeklyInterval">
+                                <span>haftada şu günlerde:</span>
+                            </div>
+                        </div>
+                        <div class="setting-group ios-style">
+                            <div class="days-grid">
+                                ${['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'].map((day, index) => `
+                                    <div class="day-button ${routine.selectedDays && routine.selectedDays.includes(index) ? 'selected' : ''}" data-day="${index}">
+                                        ${day}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aylık Seçenekleri -->
+                    <div class="frequency-options" id="monthly-options" style="display: ${routine.frequency === 'monthly' ? 'block' : 'none'}">
+                        <div class="setting-group ios-style">
+                            <div class="setting-row radio-row" data-value="monthly-date">
+                                <input type="radio" name="monthlyType" value="monthly-date" ${(routine.monthlyType || 'monthly-date') === 'monthly-date' ? 'checked' : ''}>
+                                <span>Her ayın</span>
+                                <input type="number" class="ios-number-input" min="1" max="31" value="${routine.monthlyDate || 1}" data-setting="monthlyDate">
+                                <span>. günü</span>
+                            </div>
+                            <div class="setting-row radio-row" data-value="monthly-weekday">
+                                <input type="radio" name="monthlyType" value="monthly-weekday" ${routine.monthlyType === 'monthly-weekday' ? 'checked' : ''}>
+                                <span>Her ayın</span>
+                                <select class="ios-select-small" data-setting="monthlyWeekOrder">
+                                    <option value="first" ${(routine.monthlyWeekOrder || 'first') === 'first' ? 'selected' : ''}>ilk</option>
+                                    <option value="second" ${routine.monthlyWeekOrder === 'second' ? 'selected' : ''}>ikinci</option>
+                                    <option value="third" ${routine.monthlyWeekOrder === 'third' ? 'selected' : ''}>üçüncü</option>
+                                    <option value="last" ${routine.monthlyWeekOrder === 'last' ? 'selected' : ''}>son</option>
+                                </select>
+                                <select class="ios-select-small" data-setting="monthlyWeekDay">
+                                    <option value="0" ${(routine.monthlyWeekDay || '0') === '0' ? 'selected' : ''}>Pazar</option>
+                                    <option value="1" ${routine.monthlyWeekDay === '1' ? 'selected' : ''}>Pazartesi</option>
+                                    <option value="2" ${routine.monthlyWeekDay === '2' ? 'selected' : ''}>Salı</option>
+                                    <option value="3" ${routine.monthlyWeekDay === '3' ? 'selected' : ''}>Çarşamba</option>
+                                    <option value="4" ${routine.monthlyWeekDay === '4' ? 'selected' : ''}>Perşembe</option>
+                                    <option value="5" ${routine.monthlyWeekDay === '5' ? 'selected' : ''}>Cuma</option>
+                                    <option value="6" ${routine.monthlyWeekDay === '6' ? 'selected' : ''}>Cumartesi</option>
+                                </select>
+                                <span>günü</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yıllık Seçenekleri -->
+                    <div class="frequency-options" id="yearly-options" style="display: ${routine.frequency === 'yearly' ? 'block' : 'none'}">
+                        <div class="setting-group ios-style">
+                            <div class="setting-row">
+                                <span>Her yıl</span>
+                                <select class="ios-select" data-setting="yearlyMonth">
+                                    <option value="0" ${(routine.yearlyMonth || '0') === '0' ? 'selected' : ''}>Ocak</option>
+                                    <option value="1" ${routine.yearlyMonth === '1' ? 'selected' : ''}>Şubat</option>
+                                    <option value="2" ${routine.yearlyMonth === '2' ? 'selected' : ''}>Mart</option>
+                                    <option value="3" ${routine.yearlyMonth === '3' ? 'selected' : ''}>Nisan</option>
+                                    <option value="4" ${routine.yearlyMonth === '4' ? 'selected' : ''}>Mayıs</option>
+                                    <option value="5" ${routine.yearlyMonth === '5' ? 'selected' : ''}>Haziran</option>
+                                    <option value="6" ${routine.yearlyMonth === '6' ? 'selected' : ''}>Temmuz</option>
+                                    <option value="7" ${routine.yearlyMonth === '7' ? 'selected' : ''}>Ağustos</option>
+                                    <option value="8" ${routine.yearlyMonth === '8' ? 'selected' : ''}>Eylül</option>
+                                    <option value="9" ${routine.yearlyMonth === '9' ? 'selected' : ''}>Ekim</option>
+                                    <option value="10" ${routine.yearlyMonth === '10' ? 'selected' : ''}>Kasım</option>
+                                    <option value="11" ${routine.yearlyMonth === '11' ? 'selected' : ''}>Aralık</option>
+                                </select>
+                                <span>ayının</span>
+                                <input type="number" class="ios-number-input" min="1" max="31" value="${routine.yearlyDate || 1}" data-setting="yearlyDate">
+                                <span>. günü</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bildirim Ayarı -->
+                    <div class="setting-group ios-style">
+                        <div class="setting-row toggle-row">
+                            <span class="setting-label">Bildirimler</span>
+                            <div class="ios-toggle">
+                                <input type="checkbox" class="ios-toggle-input" data-setting="notifications" ${routine.notifications !== false ? 'checked' : ''}>
+                                <span class="ios-toggle-slider"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -728,63 +802,80 @@ class BuddyAI {
             });
         });
 
-        // Settings listeners
-        document.querySelectorAll('.setting-select, .setting-input, .setting-checkbox').forEach(input => {
+        // iOS Style Settings listeners
+        document.querySelectorAll('.ios-select, .ios-select-small, .ios-number-input, .ios-toggle-input').forEach(input => {
             input.addEventListener('change', (e) => {
                 const setting = e.currentTarget.dataset.setting;
                 let value = e.currentTarget.type === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value;
                 
-                // Handle day checkboxes specially
-                if (e.currentTarget.classList.contains('day-checkbox')) {
-                    const dayNumber = parseInt(e.currentTarget.dataset.day);
-                    let selectedDays = routine.selectedDays || [];
-                    
-                    if (e.currentTarget.checked) {
-                        if (!selectedDays.includes(dayNumber)) {
-                            selectedDays.push(dayNumber);
-                        }
-                    } else {
-                        selectedDays = selectedDays.filter(d => d !== dayNumber);
-                    }
-                    
-                    this.updateRoutineSetting(routine.id, 'selectedDays', selectedDays);
-                    return;
-                }
-                
                 this.updateRoutineSetting(routine.id, setting, value);
                 
-                // Show/hide options based on frequency type
-                if (setting === 'frequencyType') {
+                // Show/hide options based on frequency
+                if (setting === 'frequency') {
                     this.toggleFrequencyOptions(value);
                 }
             });
         });
 
-        // Initial setup for frequency type
-        const frequencyType = routine.frequencyType || 'daily';
-        this.toggleFrequencyOptions(frequencyType);
+        // Radio button listeners
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (e.currentTarget.name === 'dailyType') {
+                    this.updateRoutineSetting(routine.id, 'dailyType', e.currentTarget.value);
+                } else if (e.currentTarget.name === 'monthlyType') {
+                    this.updateRoutineSetting(routine.id, 'monthlyType', e.currentTarget.value);
+                }
+            });
+        });
+
+        // Day button listeners  
+        document.querySelectorAll('.day-button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const dayIndex = parseInt(e.currentTarget.dataset.day);
+                let selectedDays = routine.selectedDays || [];
+                
+                if (selectedDays.includes(dayIndex)) {
+                    selectedDays = selectedDays.filter(d => d !== dayIndex);
+                    e.currentTarget.classList.remove('selected');
+                } else {
+                    selectedDays.push(dayIndex);
+                    e.currentTarget.classList.add('selected');
+                }
+                
+                this.updateRoutineSetting(routine.id, 'selectedDays', selectedDays);
+            });
+        });
+
+        // Initial setup for frequency
+        const frequency = routine.frequency || 'daily';
+        this.toggleFrequencyOptions(frequency);
     }
 
-    toggleFrequencyOptions(frequencyType) {
+    toggleFrequencyOptions(frequency) {
         const dailyOptions = document.getElementById('daily-options');
         const weeklyOptions = document.getElementById('weekly-options');
-        const intervalOptions = document.getElementById('interval-options');
+        const monthlyOptions = document.getElementById('monthly-options');
+        const yearlyOptions = document.getElementById('yearly-options');
         
         // Hide all first
         if (dailyOptions) dailyOptions.style.display = 'none';
         if (weeklyOptions) weeklyOptions.style.display = 'none';
-        if (intervalOptions) intervalOptions.style.display = 'none';
+        if (monthlyOptions) monthlyOptions.style.display = 'none';
+        if (yearlyOptions) yearlyOptions.style.display = 'none';
         
         // Show relevant option
-        switch (frequencyType) {
+        switch (frequency) {
             case 'daily':
                 if (dailyOptions) dailyOptions.style.display = 'block';
                 break;
             case 'weekly':
                 if (weeklyOptions) weeklyOptions.style.display = 'block';
                 break;
-            case 'interval':
-                if (intervalOptions) intervalOptions.style.display = 'block';
+            case 'monthly':
+                if (monthlyOptions) monthlyOptions.style.display = 'block';
+                break;
+            case 'yearly':
+                if (yearlyOptions) yearlyOptions.style.display = 'block';
                 break;
         }
     }
