@@ -239,6 +239,9 @@ class BuddyAI {
     }
 
     navigateToPage(page) {
+        // Scroll to top when changing pages
+        window.scrollTo(0, 0);
+
         // Update navigation
         document.querySelectorAll('.nav-item').forEach(item => {
             item.classList.remove('active');
@@ -439,6 +442,9 @@ class BuddyAI {
     showRoutineDetails(routineId) {
         const routine = this.routines.find(r => r.id === routineId);
         if (!routine) return;
+
+        // Scroll to top when opening routine detail
+        window.scrollTo(0, 0);
 
         this.navigateToPage('routine-detail');
         this.renderRoutineDetail(routine);

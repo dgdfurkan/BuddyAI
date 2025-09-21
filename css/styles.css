@@ -116,10 +116,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    max-width: 480px;
-    margin: 0 auto;
     background-color: var(--white);
-    box-shadow: var(--shadow-lg);
 }
 
 /* Header */
@@ -173,12 +170,17 @@ body {
 /* Bottom Navigation */
 .bottom-nav {
     display: flex;
-    background-color: var(--white);
-    border-top: 1px solid var(--gray-200);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
     padding: var(--spacing-2) 0;
-    position: sticky;
+    position: fixed;
     bottom: 0;
-    z-index: 100;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    max-width: 480px;
+    margin: 0 auto;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .nav-item {
@@ -192,15 +194,18 @@ body {
     padding: var(--spacing-2);
     cursor: pointer;
     transition: var(--transition-fast);
-    color: var(--gray-500);
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .nav-item.active {
-    color: var(--primary-color);
+    color: var(--white);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
 }
 
 .nav-item:hover {
-    background-color: var(--gray-50);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--white);
 }
 
 .nav-icon {
@@ -216,7 +221,11 @@ body {
 .main-content {
     flex: 1;
     padding: var(--spacing-4);
-    padding-bottom: calc(var(--spacing-4) + 80px); /* Space for bottom nav */
+    padding-bottom: calc(var(--spacing-4) + 100px); /* Space for fixed bottom nav */
+    min-height: calc(100vh - 200px); /* Ensure content fills screen */
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 /* Pages */
