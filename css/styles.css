@@ -236,11 +236,12 @@ html {
 .main-content {
     flex: 1;
     padding: var(--spacing-4);
-    padding-top: 200px; /* Space for fixed header */
+    margin-top: 120px; /* Space for fixed header */
     padding-bottom: calc(var(--spacing-4) + 100px); /* Space for fixed bottom nav */
     min-height: calc(100vh - 200px); /* Ensure content fills screen */
     max-width: 480px;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
     width: 100%;
     overflow-x: hidden;
 }
