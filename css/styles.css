@@ -259,6 +259,10 @@ html {
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--spacing-6);
+    position: relative;
+    z-index: 10;
+    background-color: var(--white);
+    padding: var(--spacing-2) 0;
 }
 
 .page-header h2 {
