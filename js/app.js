@@ -236,6 +236,51 @@ class BuddyAI {
                 this.selectPeriod(period);
             });
         });
+
+        // Prevent zoom and overscroll
+        this.preventZoomAndOverscroll();
+    }
+
+    preventZoomAndOverscroll() {
+        // Prevent zoom gestures
+        document.addEventListener('gesturestart', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('gesturechange', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('gestureend', (e) => {
+            e.preventDefault();
+        });
+
+        // Prevent double tap zoom
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Prevent overscroll bounce
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Prevent pull-to-refresh
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length !== 1) return;
+            const touch = e.touches[0];
+            const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (el && el.scrollTop === 0) {
+                e.preventDefault();
+            }
+        }, { passive: false });
     }
 
     navigateToPage(page) {

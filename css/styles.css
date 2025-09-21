@@ -73,6 +73,14 @@ body {
     background-color: var(--gray-50);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+html {
+    overflow-x: hidden;
+    overscroll-behavior: none;
 }
 
 /* Loading Screen */
@@ -117,6 +125,8 @@ body {
     display: flex;
     flex-direction: column;
     background-color: var(--white);
+    overflow-x: hidden;
+    position: relative;
 }
 
 /* Header */
@@ -226,6 +236,8 @@ body {
     max-width: 480px;
     margin: 0 auto;
     width: 100%;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
 }
 
 /* Pages */
