@@ -236,7 +236,7 @@ html {
 .main-content {
     flex: 1;
     padding: var(--spacing-4);
-    padding-top: calc(var(--spacing-4) + 80px); /* Space for fixed header */
+    padding-top: calc(var(--spacing-4) + 120px); /* Space for fixed header */
     padding-bottom: calc(var(--spacing-4) + 100px); /* Space for fixed bottom nav */
     min-height: calc(100vh - 200px); /* Ensure content fills screen */
     max-width: 480px;
