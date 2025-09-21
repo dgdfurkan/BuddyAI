@@ -62,8 +62,8 @@ class NotificationsManager {
 
         const options = {
             body: routine.description,
-            icon: '/icons/icon-192x192.png',
-            badge: '/icons/icon-72x72.png',
+            icon: '/icons/logo.png',
+            badge: '/icons/logo.png',
             vibrate: [100, 50, 100],
             data: {
                 routineId: routine.id,
@@ -73,12 +73,12 @@ class NotificationsManager {
                 {
                     action: 'complete',
                     title: 'Tamamla',
-                    icon: '/icons/icon-192x192.png'
+                    icon: '/icons/logo.png'
                 },
                 {
                     action: 'snooze',
                     title: '5dk Sonra',
-                    icon: '/icons/icon-192x192.png'
+                    icon: '/icons/logo.png'
                 }
             ],
             tag: `routine-${routine.id}`,
@@ -116,8 +116,8 @@ class NotificationsManager {
         if (this.permission !== 'granted') return;
 
         const defaultOptions = {
-            icon: '/icons/icon-192x192.png',
-            badge: '/icons/icon-72x72.png',
+            icon: '/icons/logo.png',
+            badge: '/icons/logo.png',
             vibrate: [100, 50, 100]
         };
 

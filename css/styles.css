@@ -147,7 +147,10 @@ body {
 }
 
 .app-icon {
-    font-size: var(--font-size-3xl);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    object-fit: contain;
 }
 
 .icon-btn {
